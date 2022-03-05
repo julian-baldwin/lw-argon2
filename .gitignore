@@ -1,0 +1,8 @@
+# Ignore file for DB Cache
+*fasl
+.*~
+/.vscode/
+
+# Ignore contents of build directory although an explicit .gitkeep
+# file forces the directory to exist when checking out source.
+/build/*
