@@ -16,4 +16,10 @@
    #:incorrect-password
    #:argon2-i
    #:argon2-d
-   #:argon2-id))
+   #:argon2-id
+   #:*default-type*
+   #:*default-iterations*
+   #:*default-memory*
+   #:*default-threads*
+   #:*default-hash-length*
+   #:*default-salt-length*))
