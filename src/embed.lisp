@@ -3,7 +3,7 @@
 (in-package #:argon2)
 
 #+argon2-embed
-(eval-when (:compile-toplevel :load-toplevel :execute)
+(eval-when (:load-toplevel :execute)
   (defparameter *build-path* (asdf:system-relative-pathname "lw-argon2" "build/"))
   (defparameter *source-path* (asdf:system-relative-pathname "lw-argon2" "deps/argon2/src/"))
   (defparameter *include-paths*
@@ -12,7 +12,7 @@
           (asdf:system-relative-pathname "lw-argon2" "deps/argon2/src/blake2/"))))
 
 #+argon2-embed
-(eval-when (:compile-toplevel :execute)
+(eval-when (:load-toplevel :execute)
   (let ((sources (list "argon2" "core" "thread" "encoding" "blake2/blake2b"
                        #+argon2-opt "opt" #-argon2-opt "ref"))
         (output (make-pathname :name "argon2-concat" :type "c" :defaults *build-path*)))
