@@ -25,15 +25,11 @@
         (:default-pathname *build-path*)
         :members (("argon2-concat.c" :type :c-file :embedded-module argon2-embedded)))
     (let ((scm:*c-default-options*
-            #+(or darwin linux) (apply 'string-append scm:*c-default-options* " -O3 "
+            #+(or macosx linux) (apply 'string-append scm:*c-default-options* " -O3 "
                                        (mapcar (lambda (path) (format nil " -I ~A " (namestring path)))
                                                *include-paths*))
-            #+mswindows (error "Compiler flags not implemented for Windows.")))
-      (compile-system "lw-argon2/embed"))))
-
-#+argon2-embed
-(eval-when (:load-toplevel :execute)
-  (load-system "lw-argon2/embed"))
+            #-(or macosx linux) (error "Compiler flags not implemented for this platform.")))
+      (compile-system "lw-argon2/embed" :load t))))
 
 #+argon2-embed
 (defun initialise-embedded ()

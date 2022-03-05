@@ -36,7 +36,7 @@
           (error 'incorrect-password)
           (error 'argon2-error :code result))))
 
-#+(or darwin linux)
+#+(or macosx linux)
 (defun random-data (length)
   "Generate a vector of LENGTH random bytes."
   (let ((result (make-array length :element-type '(unsigned-byte 8) :single-thread t)))
@@ -44,7 +44,7 @@
       (read-sequence result source)
       result)))
 
-#+mswindows
+#-(or macosx linux)
 (defun random-data (length)
   "Generate a vector of LENGTH random bytes."
   (declare (ignore length))
