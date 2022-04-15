@@ -5,7 +5,6 @@
 (defpackage #:argon2
   (:add-use-defaults t)
   (:export
-   #+argon2-embed
    #:initialise-embedded
    #:hash-password
    #:verify-password

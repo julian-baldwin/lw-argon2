@@ -9,7 +9,6 @@
     :components
     ((:module "src"
       :components ((:file "package")
-                   #+argon2-embed
                    (:file "embed" :depends-on ("package"))
                    (:file "fli" :depends-on ("package"))
                    (:file "argon2" :depends-on ("package"))))))

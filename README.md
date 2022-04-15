@@ -1,7 +1,7 @@
 # Argon2 for LispWorks
 
-A lightweight high-level binding to the Argon2 reference implementation, with an optional embedded
-FLI module. This is spun off my own internal work as Ironclad doesn't implement the ID variant or
+A lightweight high-level binding to the Argon2 reference implementation, with an embedded FLI
+module. This is spun off my own internal work as Ironclad doesn't implement the ID variant or
 parallelism.
 
 ## License
@@ -32,34 +32,28 @@ environments. There are two places in particular that require addressing: the co
 compile the embedded library (see `embed.lisp`) and the function `ARGON2::RANDOM-DATA` in
 `argon2.lisp` which is used to generate a random salt. On the other platforms this is done by
 reading from `/dev/urandom` - probably the easiest solution on Windows is to use `RtlGenRandom` or
-an equivalent function, but I can't test this so haven't implemented it. If you don't use the
-embedding feature and supply your own salt to the hash function the remainder should still work.
+an equivalent function, but I can't test this so haven't implemented it. I can't justify making it
+dependent on Ironclad or similar just for a single function, however you could do this if desired.
 
 ## Usage
 
 LW-Argon2 includes the [Argon2 reference implementation](https://github.com/P-H-C/phc-winner-argon2)
-as a Git submodule. To embed the Argon2 library, initialise this submodule and push `:ARGON2-EMBED`
-onto `*FEATURES*` _before_ loading it and arrange to call `ARGON2:INITIALISE-EMBEDDED` at runtime.
-You are responsible for ensuring you comply with its (very liberal) license. Embedding works by
-concatenating the relevant source files from the reference implementation and creating a LispWorks
-system with this concatenated source as an embedded module. This is compiled at load time with a few
-tweaks to the compiler flags for optimisation and include paths.
+as a Git submodule. To embed the Argon2 library, initialise this submodule and and arrange to call
+`ARGON2:INITIALISE-EMBEDDED` at runtime. You are responsible for ensuring you comply with its (very
+liberal) license. Embedding works by concatenating the relevant source files from the reference
+implementation and creating a LispWorks system with this concatenated source as an embedded module.
+This is compiled at load time with a few tweaks to the compiler flags for optimisation and include
+paths.
 
-The Argon2 library includes some optimised source code in the file `opt.c` which can be enabled
-by pushing `:ARGON2-OPT` onto the features list:
+Example:
 
-    CL-USER 1 > (push :argon2-embed *features*)
-    CL-USER 2 > (push :argon2-opt *features*)
-    CL-USER 3 > (ql:quickload "lw-argon2")
+    CL-USER 1 > (ql:quickload "lw-argon2")
     ;; output elided
-    CL-USER 4 > (argon2:initialise-embedded)
-    CL-USER 5 > (argon2:hash-password "test")
+    CL-USER 2 > (argon2:initialise-embedded)
+    CL-USER 3 > (argon2:hash-password "test")
     "$argon2id$v=19$m=4096,t=3,p=1$TE2DcVMJrRx098254AeMmg$cZdDIaW3tpYrLnx8mnyT/AWT3d0Sb1h3sm43HJJlNmY"
-    CL-USER 6 > (argon2:verify-password "test" *)
+    CL-USER 4 > (argon2:verify-password "test" *)
     T
-
-If you do not use the optimised source the file `ref.c` will be included instead. If not embedding,
-you are responsible for ensuring an Argon2 FLI module is available at runtime.
 
 Use the function `ARGON2:HASH-PASSWORD` to generate an Argon2 hash of a password. There are keyword
 arguments for the time, memory and parallelism parameters and the type of Argon2 hash (I/D/ID). The

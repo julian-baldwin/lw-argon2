@@ -2,7 +2,6 @@
 
 (in-package #:argon2)
 
-#+argon2-embed
 (eval-when (:load-toplevel :execute)
   (defparameter *build-path* (asdf:system-relative-pathname "lw-argon2" "build/"))
   (defparameter *source-path* (asdf:system-relative-pathname "lw-argon2" "deps/argon2/src/"))
@@ -11,10 +10,8 @@
           (asdf:system-relative-pathname "lw-argon2" "deps/argon2/include/")
           (asdf:system-relative-pathname "lw-argon2" "deps/argon2/src/blake2/"))))
 
-#+argon2-embed
 (eval-when (:load-toplevel :execute)
-  (let ((sources (list "argon2" "core" "thread" "encoding" "blake2/blake2b"
-                       #+argon2-opt "opt" #-argon2-opt "ref"))
+  (let ((sources (list "argon2" "core" "thread" "encoding" "blake2/blake2b" "opt"))
         (output (make-pathname :name "argon2-concat" :type "c" :defaults *build-path*)))
     (delete-file output nil)
     (mapc (lambda (file)
@@ -31,7 +28,6 @@
             #-(or macosx linux) (error "Compiler flags not implemented for this platform.")))
       (compile-system "lw-argon2/embed" :load t))))
 
-#+argon2-embed
 (defun initialise-embedded ()
   "Install the embedded foreign module at runtime."
   (fli:install-embedded-module 'argon2-embedded))
